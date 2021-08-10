@@ -1,0 +1,8 @@
+stacking-blocks:
+  - DIAMOND_BLOCK
+  - EMERALD_BLOCK
+  - GOLD_BLOCK
+  - REDSTONE_BLOCK
+  - LAPIS_BLOCK
+  - IRON_BLOCK
+  - COAL_BLOCK
