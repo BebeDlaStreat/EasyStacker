@@ -1,0 +1,6 @@
+name: EasyStacker
+author: BebeDlaStreat
+description: A simple stacker plugin with somes options
+website: https://github.com/BebeDlaStreat/EasyStacker
+version: 0.1
+main: fr.bebedlastreat.estacker.Main
