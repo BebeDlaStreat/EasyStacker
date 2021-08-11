@@ -2,10 +2,12 @@ package fr.bebedlastreat.estacker.utils;
 
 import fr.bebedlastreat.estacker.Main;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StackersManager {
@@ -14,16 +16,39 @@ public class StackersManager {
     private static YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
 
     public static int getNumberOfStacker() {
-        int i = 0;
-        while (configuration.get(String.valueOf(i)) != null) i++;
-        return i;
+        return Main.getInstance().getStackers().size();
     }
 
-    public static void createStacker(Location location) {
-        int id = getNumberOfStacker();
-        configuration.set(id + ".location", location);
-        configuration.set(id + ".value", 2);
+    public static List<Stacker> loadStackers() {
+        List<Stacker> result = new ArrayList<>();
+        for (String key : configuration.getConfigurationSection("").getKeys(false)) {
+            result.add((Stacker) configuration.get(key, Stacker.class));
+        }
+        return result;
+    }
 
+    public static void createStacker(Stacker stacker) {
+        Main.getInstance().getStackers().add(stacker);
+    }
+
+    public static void delete(Stacker stacker) {
+        Main.getInstance().getStackers().remove(stacker);
+    }
+
+    public static void saveStackers(List<Stacker> stackers) {
+        for (String key : configuration.getConfigurationSection("").getKeys(false)) {
+            configuration.set(key, null);
+        }
+        try {
+            configuration.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int i = 0;
+        for (Stacker zone : stackers) {
+            configuration.set(String.valueOf(i), zone);
+            i++;
+        }
         try {
             configuration.save(file);
         } catch (IOException e) {
@@ -32,41 +57,16 @@ public class StackersManager {
     }
 
     public static boolean exist(Location location) {
-        for (int i = 0; i < getNumberOfStacker(); i++) {
-            if (((Location) configuration.get(i + ".location")).equals(location)) return true;
+        for (Stacker stacker : Main.getInstance().getStackers()) {
+            if (stacker.getLoc().equals(location)) return true;
         }
         return false;
     }
 
-    public static int getStackByLocation(Location location) {
-        for (int i = 0; i < getNumberOfStacker(); i++) {
-            if (((Location) configuration.get(i + ".location")).equals(location)) return i;
+    public static Stacker getStacker(Location location) {
+        for (Stacker stacker : Main.getInstance().getStackers()) {
+            if (stacker.getLoc().equals(location)) return stacker;
         }
-        return -1;
+        return null;
     }
-
-    public static int getStackNumber(Location location) {
-        return configuration.getInt(getStackByLocation(location) + ".value");
-    }
-
-    public static void setStackNumber(Location location, int number) {
-        configuration.set(getStackByLocation(location) + ".value", number);
-
-        try {
-            configuration.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void removeStacker(Location location) {
-        configuration.set(String.valueOf(getStackByLocation(location)), null);
-
-        try {
-            configuration.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

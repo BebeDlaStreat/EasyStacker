@@ -6,3 +6,7 @@ stacking-blocks:
   - LAPIS_BLOCK
   - IRON_BLOCK
   - COAL_BLOCK
+sneaking-place: ANY
+#ANY to place a block but don't make a stacker, HAND to place all blocks in hand of player
+sneaking-break: 64
+#ALL to break all block on sneaking, ANY to canel the action or write a number to set the number of blok to break
